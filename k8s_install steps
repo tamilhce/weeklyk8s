@@ -1,0 +1,46 @@
+Reference 
+https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
+https://www.linuxtechi.com/setup-highly-available-kubernetes-cluster-kubeadm/
+
+All Nodes
+----------
+
+1  sudo apt-get update
+2  sudo apt-get install docker.io.   // check docs for other runtimes 
+3  sudo systemctl status docker 
+4  curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
+5  sudo apt-get install curl
+6  sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+7  sudo apt-get install kubeadm kubelet kubectl
+8  sudo apt-mark hold kubeadm kubelet kubectl
+9  kubeadm version
+10 sudo swapoff -a
+
+
+Master Node
+-----------
+1. if single node master 
+    sudo kubeadm init --pod-network-cidr=10.244.0.0/16 
+    // --kubernetes-version=v1.18.0 --apiserver-bind-port=6443 --cri-socket=
+    /*
+    CRI_SOCKETS = {
+    "docker": "/var/run/docker.sock",
+    "containerd": "/run/containerd/containerd.sock",
+    "crio": "/var/run/crio/crio.sock"
+     }
+    */
+2. if multi node master
+    sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --control-plane-endpoint="master/vip_ip:6443" --upload-certs 
+    // --kubernetes-version=v1.18.0 --apiserver-bind-port=6443
+    
+3. deploy cni of choice
+   sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+   
+4. Other master nodes
+    kubeadm join
+5. Worker nodes 
+   kubeadm join
+6. kubectl get nodes 
+7. kubectl get pods -n kube-system  
+    
+
