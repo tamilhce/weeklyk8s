@@ -16,12 +16,18 @@ All Nodes
 9  kubeadm version
 10 sudo swapoff -a
 
+/*
+To install specific version of kubeadm/kubelet 
+apt list -a kubeadm
+eg: from the output
+apt install -y kubeadm=1.18.13-00 kubelet=1.18.13-00 kubectl=1.18.13-00
+*/
 
 Master Node
 -----------
 1. if single node master 
     sudo kubeadm init --pod-network-cidr=10.244.0.0/16 
-    // --kubernetes-version=v1.18.0 --apiserver-bind-port=6443 --cri-socket=
+    // --apiserver-bind-port=6443 --cri-socket=
     /*
     CRI_SOCKETS = {
     "docker": "/var/run/docker.sock",
@@ -31,7 +37,7 @@ Master Node
     */
 2. if multi node master
     sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --control-plane-endpoint="master/vip_ip:6443" --upload-certs 
-    // --kubernetes-version=v1.18.0 --apiserver-bind-port=6443
+    // --apiserver-bind-port=6443
     
 3. deploy cni of choice
    sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
@@ -43,4 +49,6 @@ Master Node
 6. kubectl get nodes 
 7. kubectl get pods -n kube-system  
     
-
+Tear down
+--------
+1. kubeadm reset
